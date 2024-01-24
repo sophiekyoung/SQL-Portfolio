@@ -1,0 +1,15 @@
+WITH funnels AS ( 
+  SELECT DISTINCT b.browse_date, 
+     b.user_id, 
+     c.user_id IS NOT NULL AS 'is_checkout', 
+     p.user_id IS NOT NULL AS 'is_purchase' 
+  FROM browse AS 'b' 
+  LEFT JOIN checkout AS 'c' 
+    ON c.user_id = b.user_id 
+  LEFT JOIN purchase AS 'p' 
+    ON p.user_id = c.user_id) 
+SELECT  
+count(*) as 'num_browse',  
+sum(is_checkout) as 'num_checkout', 
+sum(is_purchase) as 'num_purchase' 
+FROM funnels 
