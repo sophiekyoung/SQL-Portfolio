@@ -1,0 +1,17 @@
+with first_touch as ( 
+  select user_id, 
+  min(timestamp) as first_touch_at 
+  from page_visits 
+  group by user_id), 
+ft_attribution as ( 
+select ft.user_id, 
+ft.first_touch_at, 
+pv.utm_campaign 
+from first_touch ft 
+join page_visits pv 
+on ft.first_touch_at = pv.timestamp 
+and ft.user_id = pv.user_id) 
+select ft_attribution.utm_campaign, 
+count (*) 
+from ft_attribution 
+group by ft_attribution.utm_campaign; 
